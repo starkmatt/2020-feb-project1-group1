@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y wget \
     && wget -O wordpress.tar.gz https://en-au.wordpress.org/latest-en_AU.tar.gz \
     && tar -xzvf wordpress.tar.gz \
     && mv wordpress/* /var/www/html \
-	&& chmod -R 755 wordpress/wp-content
-	&& chown -R apache:apache wordpress/wp-content
+	&& chmod -R 755 wp-content \
+	&& chown -R www-data:www-data . \
 	&& rm -rf wordpress/ wordpress.tar.gz \
 	&& apt-get remove -y wget
