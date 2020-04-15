@@ -3,6 +3,24 @@ module "aws-ecr" {
   source = "./modules/aws-ecr"
 }
 
+# Module ECS Cluster
+module "aws-ecs-cluster" {
+  source = "./modules/aws-ecs-cluster"
+}
+
+# Module ECS Task Definition
+module "aws-ecs-task-def" {
+  source = "./modules/aws-ecs-task-def"
+}
+
+# Module ECS Service
+module "aws-ecs-service" {
+  source = "./modules/aws-ecs-service"
+
+  cluster_id = module.aws-ecs-cluster.id
+  task_arn = module.aws-ecs-task-def.arn
+}
+
 # Aurora
 /*
 resource "aws_rds_cluster" "wordpress" {
