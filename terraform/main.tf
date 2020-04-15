@@ -36,19 +36,24 @@ resource "aws_rds_cluster" "wordpress" {
 }
 */
 
+resource "aws_db_subnet_group" "wordpress" {
+  name = "${var.project_name}_wordpress"
+  subnet_ids = [for subnet in aws_subnet.private: subnet.id]
+}
+
 # MySQL Free Tier Test
 resource "aws_db_instance" "mysql-wordpress" {
-  allocated_storage    = 20
-  identifier           = "db-wordpress"
-  storage_type         = "gp2"
-  engine               = "mysql"
-  engine_version       = "5.7"
-  instance_class       = "db.t2.micro"
-  name                 = "wordpress"
-  username             = var.username
-  password             = var.pass
-  parameter_group_name = "default.mysql5.7"
-  publicly_accessible = "true"
-  availability_zone = "ap-southeast-2a"
+  allocated_storage         = 20
+  identifier                = "db-wordpress"
+  storage_type              = "gp2"
+  engine                    = "mysql"
+  engine_version            = "5.7"
+  instance_class            = "db.t2.micro"
+  name                      = "wordpress"
+  username                  = var.username
+  password                  = var.pass
+  parameter_group_name      = "default.mysql5.7"
+  publicly_accessible       = "true"
   final_snapshot_identifier = "snapshot"
+  db_subnet_group_name      = aws_db_subnet_group.wordpress.name
 }
