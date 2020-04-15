@@ -1,0 +1,7 @@
+FROM alpine:3.11
+WORKDIR /var/www/html
+RUN apt-get update \
+	&& curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+	&& php wp-cli.phar config create --dbhost=localhost --dbname=wordpress --dbuser=root --dbpass=root --allow-root \
+	&& php wp-cli.phar core install --url=http://example/wordpress --title=Example --admin_user=admin --admin_password=admin --admin_email=admin@example.com --allow-root \
+	&& rm -rf wp-cli.phar
