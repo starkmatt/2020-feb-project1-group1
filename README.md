@@ -1,7 +1,7 @@
 2020-feb-project1-group1 - Wordpress
 
 # Module ECR Repository - Terraform
-/terrform/modules/aws-ecr
+/terraform/modules/aws-ecr
 
 # Docker Files
 /docker_files
@@ -11,13 +11,20 @@ aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS
 
 docker build -t wordpress:v1 -f Dockerfile-wordpress .
 
-docker tag wordpress:v1 ${docker_repository_name}/wordpress:latest
+docker tag wordpress:v1 ${docker_repository_name}:wordpress
 
-docker push ${docker_repository_name}/wordpress:latest
+docker push ${docker_repository_name}:wordpress
 
 # Cluster ECS
+/modules/aws-ecs-cluster
 
 # Create Task definition
+/modules/aws-ecs-task-def
+/modules/aws-ecs-service
+
+# RDS Module
+
+# CloudWatch Module
 
 
 
