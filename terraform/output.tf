@@ -1,4 +1,3 @@
-
 output "db_fqdn" {
   value = aws_db_instance.mysql-wordpress.endpoint
 }

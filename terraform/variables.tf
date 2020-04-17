@@ -1,4 +1,3 @@
-
 variable "username" {
   type        = string
   description = "Db Username"

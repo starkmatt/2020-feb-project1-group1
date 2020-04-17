@@ -5,13 +5,9 @@ resource "aws_ecs_service" "project_1" {
   task_definition = var.task_arn
   launch_type     = "FARGATE"
   desired_count   = 1
-/*
-  iam_role        = "${aws_iam_role.foo.arn}"
-  depends_on      = ["aws_iam_role_policy.foo"]
-*/
+
   network_configuration {
     assign_public_ip = "true"
-    subnets = ["subnet-0a446d9e47b3ea3ac", "subnet-0ffe987e71765b443"]
+    subnets          = ["subnet-0a446d9e47b3ea3ac", "subnet-0ffe987e71765b443"]
   }
-
 }
