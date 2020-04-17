@@ -86,22 +86,23 @@ resource "aws_main_route_table_association" "public_main" {
 resource "aws_network_acl" "private" {
   vpc_id     = aws_vpc.vpc.id
   subnet_ids = [for subnet in aws_subnet.private : subnet.id]
-  egress {
-    protocol   = "tcp"
-    rule_no    = 200
-    action     = "allow"
-    cidr_block = aws_vpc.vpc.cidr_block
-    from_port  = 443
-    to_port    = 443
-  }
 
   ingress {
-    protocol   = "tcp"
+    protocol   = "all"
     rule_no    = 100
     action     = "allow"
     cidr_block = aws_vpc.vpc.cidr_block
-    from_port  = 80
-    to_port    = 80
+    from_port  = 0
+    to_port    = 0
+  }
+
+  egress {
+    protocol   = "all"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = aws_vpc.vpc.cidr_block
+    from_port  = 0
+    to_port    = 0
   }
 
   tags = {
@@ -113,6 +114,24 @@ resource "aws_network_acl" "public" {
   vpc_id     = aws_vpc.vpc.id
   subnet_ids = [for subnet in aws_subnet.public : subnet.id]
 
+  # VPC
+  ingress {
+    protocol   = "all"
+    rule_no    = 50
+    action     = "allow"
+    cidr_block = aws_vpc.vpc.cidr_block
+    from_port  = 0
+    to_port    = 0
+  }
+  egress {
+    protocol   = "all"
+    rule_no    = 50
+    action     = "allow"
+    cidr_block = aws_vpc.vpc.cidr_block
+    from_port  = 0
+    to_port    = 0
+  }
+
   # ICMP
   ingress {
     action     = "allow"
@@ -121,8 +140,8 @@ resource "aws_network_acl" "public" {
     to_port    = 0
     icmp_code  = -1
     icmp_type  = -1
-    protocol   = "icmp"
     rule_no    = 100
+    protocol   = "icmp"
   }
   egress {
     action     = "allow"
@@ -158,8 +177,8 @@ resource "aws_network_acl" "public" {
   }
 }
 
-resource "aws_security_group" "main" {
-  name   = "${var.project_name}_security_group"
+resource "aws_security_group" "public" {
+  name   = "${var.project_name}_public_sg"
   vpc_id = aws_vpc.vpc.id
 
   ingress {
@@ -177,11 +196,53 @@ resource "aws_security_group" "main" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [
-    var.sysadmin_cidr]
+      var.sysadmin_cidr
+    ]
+  }
+
+  ingress {
+    description = "Allow all from VPC"
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
+  }
+
+  egress {
+    description = "Allow all to VPC"
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
   }
 
   tags = {
-    Name = "${var.project_name}_security_group"
+    Name = "${var.project_name}_public_sg"
+  }
+}
+
+resource "aws_security_group" "private" {
+  name   = "${var.project_name}_private_sg"
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    description = "Allow all from VPC"
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
+  }
+
+  egress {
+    description = "Allow all to VPC"
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
+  }
+
+  tags = {
+    Name = "${var.project_name}_private_sg"
   }
 }
 
