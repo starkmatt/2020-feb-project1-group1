@@ -5,3 +5,7 @@ variable "project_name" {
 variable "cidr_vpc" {
   type = string
 }
+
+variable sysadmin_cidr {
+  type = string
+}

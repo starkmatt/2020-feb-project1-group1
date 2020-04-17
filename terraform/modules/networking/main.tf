@@ -1,6 +1,7 @@
 resource "aws_vpc" "vpc" {
   cidr_block           = var.cidr_vpc
-  enable_dns_hostnames = "true" # provides an internal host name
+  enable_dns_hostnames = "true"
+  # provides an internal host name
   tags = {
     Name = var.project_name
   }
@@ -24,9 +25,10 @@ resource "aws_subnet" "private" {
 resource "aws_subnet" "public" {
   count = length(data.aws_availability_zones.available.names)
 
-  vpc_id            = aws_vpc.vpc.id
-  cidr_block        = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index * 2 + 1)
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index * 2 + 1)
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  map_public_ip_on_launch = true
   tags = {
     Name = "${var.project_name}_public-${data.aws_availability_zones.available.names[count.index]}"
   }
@@ -110,25 +112,77 @@ resource "aws_network_acl" "private" {
 resource "aws_network_acl" "public" {
   vpc_id     = aws_vpc.vpc.id
   subnet_ids = [for subnet in aws_subnet.public : subnet.id]
-  egress {
-    protocol   = "tcp"
-    rule_no    = 200
+
+  # ICMP
+  ingress {
     action     = "allow"
-    cidr_block = aws_vpc.vpc.cidr_block
-    from_port  = 443
-    to_port    = 443
+    cidr_block = "0.0.0.0/0"
+    from_port  = 0
+    to_port    = 0
+    icmp_code  = -1
+    icmp_type  = -1
+    protocol   = "icmp"
+    rule_no    = 100
+  }
+  egress {
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 0
+    to_port    = 0
+    icmp_code  = -1
+    icmp_type  = -1
+    protocol   = "icmp"
+    rule_no    = 100
   }
 
+  # SSH
   ingress {
-    protocol   = "tcp"
-    rule_no    = 100
     action     = "allow"
-    cidr_block = aws_vpc.vpc.cidr_block
-    from_port  = 80
-    to_port    = 80
+    cidr_block = var.sysadmin_cidr
+    from_port  = 22
+    to_port    = 22
+    protocol   = "tcp"
+    rule_no    = 200
+  }
+  egress {
+    action     = "allow"
+    cidr_block = var.sysadmin_cidr
+    from_port  = 1024
+    to_port    = 65535
+    protocol   = "tcp"
+    rule_no    = 200
   }
 
   tags = {
     Name = "${var.project_name}_nacl_public"
   }
 }
+
+resource "aws_security_group" "main" {
+  name   = "${var.project_name}_security_group"
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    description = "Allow all ICMP"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = [
+    "0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow sysadmin IP to connect via SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [
+    var.sysadmin_cidr]
+  }
+
+  tags = {
+    Name = "${var.project_name}_security_group"
+  }
+}
+
+

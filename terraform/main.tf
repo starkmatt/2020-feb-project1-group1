@@ -22,9 +22,10 @@ module "aws-ecs-service" {
 }
 
 module "networking" {
-  source = "./modules/networking"
-  project_name = var.project_name
-  cidr_vpc = var.cidr_vpc
+  source        = "./modules/networking"
+  project_name  = var.project_name
+  cidr_vpc      = var.cidr_vpc
+  sysadmin_cidr = var.sysadmin_cidr
 }
 
 # Aurora
