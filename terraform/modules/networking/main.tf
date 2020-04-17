@@ -6,7 +6,6 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -56,7 +55,7 @@ resource "aws_route_table" "rt_private" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block     = "0.0.0.0/0"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
   tags = {
@@ -70,7 +69,6 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.rt_public.id
 }
 
-
 resource "aws_route_table_association" "private" {
   count          = length(aws_subnet.private)
   subnet_id      = aws_subnet.private[count.index].id
@@ -83,4 +81,54 @@ resource "aws_main_route_table_association" "public_main" {
   route_table_id = aws_route_table.rt_public.id
 }
 
+resource "aws_network_acl" "private" {
+  vpc_id     = aws_vpc.vpc.id
+  subnet_ids = [for subnet in aws_subnet.private : subnet.id]
+  egress {
+    protocol   = "tcp"
+    rule_no    = 200
+    action     = "allow"
+    cidr_block = aws_vpc.vpc.cidr_block
+    from_port  = 443
+    to_port    = 443
+  }
 
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = aws_vpc.vpc.cidr_block
+    from_port  = 80
+    to_port    = 80
+  }
+
+  tags = {
+    Name = "${var.project_name}_nacl_private"
+  }
+}
+
+resource "aws_network_acl" "public" {
+  vpc_id     = aws_vpc.vpc.id
+  subnet_ids = [for subnet in aws_subnet.public : subnet.id]
+  egress {
+    protocol   = "tcp"
+    rule_no    = 200
+    action     = "allow"
+    cidr_block = aws_vpc.vpc.cidr_block
+    from_port  = 443
+    to_port    = 443
+  }
+
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = aws_vpc.vpc.cidr_block
+    from_port  = 80
+    to_port    = 80
+  }
+
+  tags = {
+    Name = "${var.project_name}_nacl_public"
+  }
+}

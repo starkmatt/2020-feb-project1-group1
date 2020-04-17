@@ -21,6 +21,12 @@ module "aws-ecs-service" {
   task_arn = module.aws-ecs-task-def.arn
 }
 
+module "networking" {
+  source = "./modules/networking"
+  project_name = var.project_name
+  cidr_vpc = var.cidr_vpc
+}
+
 # Aurora
 /*
 resource "aws_rds_cluster" "wordpress" {
@@ -38,7 +44,7 @@ resource "aws_rds_cluster" "wordpress" {
 
 resource "aws_db_subnet_group" "wordpress" {
   name = "${var.project_name}_wordpress"
-  subnet_ids = [for subnet in aws_subnet.private: subnet.id]
+  subnet_ids = module.networking.subnet_private_ids
 }
 
 # MySQL Free Tier Test
