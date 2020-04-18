@@ -1,6 +1,6 @@
 variable "container_definitions" {
   description = "Container Definitions"
-  default = <<DEFINITION
+  default     = <<DEFINITION
   [
   {
     "name": "project_1",

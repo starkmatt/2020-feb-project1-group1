@@ -14,8 +14,8 @@ module "aws-ecs-task-def" {
 module "aws-ecs-service" {
   source = "./modules/aws-ecs-service"
 
-  cluster_id   = module.aws-ecs-cluster.id
-  task_arn     = module.aws-ecs-task-def.arn
+  cluster_id = module.aws-ecs-cluster.id
+  task_arn   = module.aws-ecs-task-def.arn
   project_name = var.project_name
   subnet_ids   = module.networking.subnet_private_ids
 }
@@ -32,6 +32,7 @@ resource "aws_db_subnet_group" "wordpress" {
   subnet_ids = module.networking.subnet_private_ids
 }
 
+>>>>>>> master
 resource "aws_db_instance" "mysql-wordpress" {
   allocated_storage         = 20
   identifier                = "db-wordpress"
@@ -44,6 +45,7 @@ resource "aws_db_instance" "mysql-wordpress" {
   password                  = var.pass
   parameter_group_name      = "default.mysql5.7"
   publicly_accessible       = "true"
+  availability_zone         = "ap-southeast-2a"
   final_snapshot_identifier = "snapshot"
   db_subnet_group_name      = aws_db_subnet_group.wordpress.name
 }

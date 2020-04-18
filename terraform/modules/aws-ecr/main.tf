@@ -4,4 +4,8 @@ resource "aws_ecr_repository" "ecr" {
   image_scanning_configuration {
     scan_on_push = false
   }
+
+  tags = {
+    Environment = "Project1 - Dev"
+  }
 }
