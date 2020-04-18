@@ -1,7 +1,15 @@
+variable "project_name" {
+  type = string
+}
+
+variable "subnet_ids" {
+  type = list(string)
+}
+
 variable "cluster_id" {
-  description = "Cluster ID"
+  type        = string
 }
 
 variable "task_arn" {
-  description = "Task Definition ARN"
+  type        = string
 }

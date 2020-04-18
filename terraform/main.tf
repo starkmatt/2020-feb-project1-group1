@@ -1,54 +1,49 @@
-# Module ECR
 module "aws-ecr" {
   source = "./modules/aws-ecr"
+  project_name = var.project_name
 }
 
-# Module ECS Cluster
 module "aws-ecs-cluster" {
   source = "./modules/aws-ecs-cluster"
 }
 
-# Module ECS Task Definition
 module "aws-ecs-task-def" {
   source = "./modules/aws-ecs-task-def"
 }
 
-# Module ECS Service
 module "aws-ecs-service" {
   source = "./modules/aws-ecs-service"
 
-  cluster_id = module.aws-ecs-cluster.id
-  task_arn = module.aws-ecs-task-def.arn
+  cluster_id   = module.aws-ecs-cluster.id
+  task_arn     = module.aws-ecs-task-def.arn
+  project_name = var.project_name
+  subnet_ids   = module.networking.subnet_private_ids
 }
 
-# Aurora
-/*
-resource "aws_rds_cluster" "wordpress" {
-  cluster_identifier      = "aurora-mysql-wordpress"
-  engine                  = "aurora-mysql"
-  engine_version          = "5.7.mysql_aurora.2.07.2"
-  availability_zones      = ["ap-southeast-2a", "ap-southeast-2b", "ap-southeast-2c"]
-  database_name           = "wordpress"
-  master_username         = var.username
-  master_password         = var.pass
-  backup_retention_period = 5
-  preferred_backup_window = "07:00-09:00"
+module "networking" {
+  source        = "./modules/networking"
+  project_name  = var.project_name
+  cidr_vpc      = var.cidr_vpc
+  sysadmin_cidr = var.sysadmin_cidr
 }
-*/
 
-# MySQL Free Tier Test
+resource "aws_db_subnet_group" "wordpress" {
+  name       = "${var.project_name}_wordpress"
+  subnet_ids = module.networking.subnet_private_ids
+}
+
 resource "aws_db_instance" "mysql-wordpress" {
-  allocated_storage    = 20
-  identifier           = "db-wordpress"
-  storage_type         = "gp2"
-  engine               = "mysql"
-  engine_version       = "5.7"
-  instance_class       = "db.t2.micro"
-  name                 = "wordpress"
-  username             = var.username
-  password             = var.pass
-  parameter_group_name = "default.mysql5.7"
-  publicly_accessible = "true"
-  availability_zone = "ap-southeast-2a"
+  allocated_storage         = 20
+  identifier                = "db-wordpress"
+  storage_type              = "gp2"
+  engine                    = "mysql"
+  engine_version            = "5.7"
+  instance_class            = "db.t2.micro"
+  name                      = "wordpress"
+  username                  = var.username
+  password                  = var.pass
+  parameter_group_name      = "default.mysql5.7"
+  publicly_accessible       = "true"
   final_snapshot_identifier = "snapshot"
+  db_subnet_group_name      = aws_db_subnet_group.wordpress.name
 }
