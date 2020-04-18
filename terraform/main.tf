@@ -27,12 +27,18 @@ module "networking" {
   sysadmin_cidr = var.sysadmin_cidr
 }
 
+module "aws-efs" {
+  source = "./modules/aws-efs"
+  project_name = var.project_name
+  subnet_ids = module.networking.subnet_private_ids
+}
+
+
 resource "aws_db_subnet_group" "wordpress" {
   name       = "${var.project_name}_wordpress"
   subnet_ids = module.networking.subnet_private_ids
 }
 
->>>>>>> master
 resource "aws_db_instance" "mysql-wordpress" {
   allocated_storage         = 20
   identifier                = "db-wordpress"
