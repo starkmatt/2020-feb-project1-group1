@@ -24,7 +24,6 @@ module "networking" {
   source        = "./modules/networking"
   project_name  = var.project_name
   cidr_vpc      = var.cidr_vpc
-  sysadmin_cidr = var.sysadmin_cidr
 }
 
 resource "aws_db_subnet_group" "wordpress" {
