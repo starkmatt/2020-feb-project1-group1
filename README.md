@@ -1,6 +1,6 @@
 # Project 01 - Group 01 - Wordpress Solution 
 
-Solution based on AWS to install worpdpress site with Fargate and Aurora DB Cluster. 
+Solution based on AWS to install wordpress site with Fargate and Aurora DB Cluster. 
 
 # Solution Diagram 
 
@@ -14,10 +14,7 @@ Solution based on AWS to install worpdpress site with Fargate and Aurora DB Clus
 
 # Instruction 
 
-Soon if news 
-
-
-
+Coming soon 
 
 
 
@@ -30,10 +27,3 @@ docker build -t wordpress:v1 -f Dockerfile-wordpress .
 docker tag wordpress:v1 ${docker_repository_name}:wordpress
 
 docker push ${docker_repository_name}:wordpress
-
-
-
-
-
-
-
