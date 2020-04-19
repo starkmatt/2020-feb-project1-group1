@@ -32,7 +32,6 @@ resource "aws_db_subnet_group" "wordpress" {
   subnet_ids = module.networking.subnet_private_ids
 }
 
->>>>>>> master
 resource "aws_db_instance" "mysql-wordpress" {
   allocated_storage         = 20
   identifier                = "db-wordpress"
