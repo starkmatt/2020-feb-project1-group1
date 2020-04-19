@@ -1,10 +1,26 @@
-2020-feb-project1-group1 - Wordpress
+# Project 01 - Group 01 - Wordpress Solution 
 
-# Module ECR Repository - Terraform
-/terraform/modules/aws-ecr
+Solution based on AWS to install worpdpress site with Fargate and Aurora DB Cluster. 
 
-# Docker Files
-/docker_files
+# Solution Diagram 
+
+![](docs/devops-image-diagram-project-01.png)
+
+# Instalation Requirements 
+
+- Make
+- Docker-compose 
+- Git
+
+# Instruction 
+
+Soon if news 
+
+
+
+
+
+
 
 # Push image to docker repository
 aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${docker_repository_name}
@@ -15,16 +31,6 @@ docker tag wordpress:v1 ${docker_repository_name}:wordpress
 
 docker push ${docker_repository_name}:wordpress
 
-# Cluster ECS
-/modules/aws-ecs-cluster
-
-# Create Task definition
-/modules/aws-ecs-task-def
-/modules/aws-ecs-service
-
-# RDS Module
-
-# CloudWatch Module
 
 
 
