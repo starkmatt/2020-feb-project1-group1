@@ -25,3 +25,8 @@ variable "cidr_vpc" {
 variable "rds_security_group_ids" {
   type = list(string)
 }
+
+variable "container_definition_file" {
+  type        = string
+  description = "A list of valid container definitions provided as a single valid JSON document."
+}
