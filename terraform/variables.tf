@@ -1,11 +1,11 @@
 
 variable "project_name" {
-  default = "devops-project-01" 
+  default = "devops-project-01"
 }
 
-variable "project_env" { 
+variable "project_env" {
   default = "wordpress-dev"
-} 
+}
 
 variable "db_username" {
   type        = string
@@ -19,5 +19,9 @@ variable "db_password" {
 
 variable "cidr_vpc" {
   description = "CIDR block for the VPC"
-  default = "10.10.0.0/16"
+  default     = "10.10.0.0/16"
+}
+
+variable "rds_security_group_ids" {
+  type = list(string)
 }

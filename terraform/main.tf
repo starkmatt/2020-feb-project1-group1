@@ -1,10 +1,10 @@
 module "aws-ecr" {
-  source = "./modules/aws-ecr"
+  source       = "./modules/aws-ecr"
   project_name = var.project_name
 }
 
 module "aws-ecs-cluster" {
-  source = "./modules/aws-ecs-cluster"
+  source       = "./modules/aws-ecs-cluster"
   project_name = var.project_name
   project_env  = var.project_env
 }
@@ -16,43 +16,42 @@ module "aws-ecs-task-def" {
 module "aws-ecs-service" {
   source = "./modules/aws-ecs-service"
 
-  cluster_id = module.aws-ecs-cluster.id
-  task_arn   = module.aws-ecs-task-def.arn
+  cluster_id   = module.aws-ecs-cluster.id
+  task_arn     = module.aws-ecs-task-def.arn
   project_name = var.project_name
   subnet_ids   = module.networking.subnet_private_ids
 }
 
 module "networking" {
-  source        = "./modules/networking"
-  project_name  = var.project_name
-  cidr_vpc      = var.cidr_vpc
+  source       = "./modules/networking"
+  project_name = var.project_name
+  cidr_vpc     = var.cidr_vpc
 }
 
 module "aws-efs" {
-  source = "./modules/aws-efs"
+  source       = "./modules/aws-efs"
   project_name = var.project_name
-  subnet_ids = module.networking.subnet_private_ids
+  subnet_ids   = module.networking.subnet_private_ids
 }
 
+module "aurora-db" {
+  source = "./modules/aws-rds"
 
-resource "aws_db_subnet_group" "wordpress" {
-  name       = "${var.project_name}_wordpress"
-  subnet_ids = module.networking.subnet_private_ids
-}
+  db_username        = var.db_username
+  db_password        = var.db_password
+  vpc_id             = module.networking.vpc_id
+  subnet_ids         = module.networking.subnet_private_ids
+  availability_zones = module.networking.availability_zone_names
+  security_group_ids = var.rds_security_group_ids
+  engine_mode        = "serverless"
+  env_prefix         = "dev"
+  storage_encrypted  = true
 
-resource "aws_db_instance" "mysql-wordpress" {
-  allocated_storage         = 20
-  identifier                = "db-wordpress"
-  storage_type              = "gp2"
-  engine                    = "mysql"
-  engine_version            = "5.7"
-  instance_class            = "db.t2.micro"
-  name                      = "wordpress"
-  username                  = var.db_username
-  password                  = var.db_password
-  parameter_group_name      = "default.mysql5.7"
-  publicly_accessible       = "true"
-  availability_zone         = "ap-southeast-2a"
-  final_snapshot_identifier = "snapshot"
-  db_subnet_group_name      = aws_db_subnet_group.wordpress.name
+  scaling_configuration = {
+    auto_pause               = true
+    max_capacity             = 32
+    min_capacity             = 8
+    seconds_until_auto_pause = 300
+    timeout_action           = "ForceApplyCapacityChange"
+  }
 }
