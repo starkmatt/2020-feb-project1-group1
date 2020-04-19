@@ -1,14 +1,18 @@
 
 variable "project_name" {
-  default = "project_1_group_1"
+  default = "devops-project-01" 
 }
 
-variable "username" {
+variable "project_env" { 
+  default = "wordpress-dev"
+} 
+
+variable "db_username" {
   type        = string
   description = "Db Username"
 }
 
-variable "pass" {
+variable "db_password" {
   type        = string
   description = "Db Pass"
 }
