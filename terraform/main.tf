@@ -5,6 +5,8 @@ module "aws-ecr" {
 
 module "aws-ecs-cluster" {
   source = "./modules/aws-ecs-cluster"
+  project_name = var.project_name
+  project_env  = var.project_env
 }
 
 module "aws-ecs-task-def" {
@@ -40,8 +42,8 @@ resource "aws_db_instance" "mysql-wordpress" {
   engine_version            = "5.7"
   instance_class            = "db.t2.micro"
   name                      = "wordpress"
-  username                  = var.username
-  password                  = var.pass
+  username                  = var.db_username
+  password                  = var.db_password
   parameter_group_name      = "default.mysql5.7"
   publicly_accessible       = "true"
   availability_zone         = "ap-southeast-2a"
