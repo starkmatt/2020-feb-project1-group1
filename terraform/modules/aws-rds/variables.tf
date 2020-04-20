@@ -19,10 +19,6 @@ variable "availability_zones" {
   type = list(string)
 }
 
-variable "security_group_ids" {
-  type = list(string)
-}
-
 variable "env_prefix" {
   type = string
 }

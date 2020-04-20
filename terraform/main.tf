@@ -46,7 +46,6 @@ module "aurora-db" {
   vpc_id             = module.networking.vpc_id
   subnet_ids         = module.networking.subnet_private_ids
   availability_zones = module.networking.availability_zone_names
-  security_group_ids = var.rds_security_group_ids
   engine_mode        = "serverless"
   env_prefix         = "dev"
   storage_encrypted  = true
