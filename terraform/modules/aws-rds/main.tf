@@ -17,7 +17,7 @@ resource "aws_rds_cluster" "default" {
   master_username           = var.db_username
   master_password           = var.db_password
   availability_zones        = var.availability_zones
-  vpc_security_group_ids    = var.security_group_ids
+  vpc_security_group_ids    = [aws_security_group.default.id]
   skip_final_snapshot       = var.skip_final_snapshot
   final_snapshot_identifier = var.final_snapshot_identifier
   db_subnet_group_name      = aws_db_subnet_group.default.id
@@ -38,5 +38,29 @@ resource "aws_rds_cluster" "default" {
       seconds_until_auto_pause = lookup(scaling_configuration.value, "seconds_until_auto_pause", null)
       timeout_action           = lookup(scaling_configuration.value, "timeout_action", null)
     }
+  }
+}
+
+resource "aws_security_group" "default" {
+  name        = "${local.resource_name_prefix}-${var.identifier}-sg"
+  description = "Allow RDS inbound traffic"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 3306
+    to_port     = 3306
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_rds"
   }
 }

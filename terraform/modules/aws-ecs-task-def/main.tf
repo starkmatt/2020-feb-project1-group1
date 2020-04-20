@@ -9,12 +9,12 @@ resource "aws_ecs_task_definition" "project_1" {
   tags                     = var.tags
 
   volume {
-    name = var.volume
+    name = var.volume_name
 
     docker_volume_configuration {
       scope         = var.volume_scope
       autoprovision = var.volume_autoprovision
-      driver        = var_volume_driver
+      driver        = var.volume_driver
 
       driver_opts = {
         "type"   = var.file_system_type

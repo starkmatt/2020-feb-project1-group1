@@ -39,7 +39,7 @@ variable "network_mode" {
 }
 
 variable "tags" {
-  type = "map"
+  type = map
 
   default = {
     Environment = "Project1 - Dev"
