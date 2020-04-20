@@ -24,6 +24,6 @@ variable "cidr_vpc" {
 
 variable "container_definition_file" {
   type        = string
-  default     = "task-definitions/service.json"
+  default     = "../task-definitions/service.json"
   description = "A list of valid container definitions provided as a single valid JSON document."
 }

@@ -44,7 +44,7 @@ resource "aws_rds_cluster" "default" {
 resource "aws_security_group" "default" {
   name        = "${local.resource_name_prefix}-${var.identifier}-sg"
   description = "Allow RDS inbound traffic"
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
 
   ingress {
     protocol    = "tcp"
