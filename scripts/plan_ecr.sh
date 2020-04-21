@@ -1,2 +1,3 @@
-terraform init ./terraform/aws-ecr
-terraform plan -out ecr ./terraform/aws-ecr
+cd /code/terraform/aws-ecr
+terraform init
+terraform plan -out ecr
