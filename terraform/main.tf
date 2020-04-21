@@ -1,8 +1,3 @@
-module "aws-ecr" {
-  source       = "./modules/aws-ecr"
-  project_name = var.project_name
-}
-
 module "aws-ecs-cluster" {
   source       = "./modules/aws-ecs-cluster"
   project_name = var.project_name
