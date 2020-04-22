@@ -7,9 +7,13 @@ variable "subnet_ids" {
 }
 
 variable "cluster_id" {
-  type        = string
+  type = string
 }
 
 variable "task_arn" {
-  type        = string
+  type = string
+}
+
+variable "vpc_id" {
+  type = string
 }
