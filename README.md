@@ -21,7 +21,7 @@ Clone or download the repository:
 git clone https://github.com/devopsacademyau/2020-feb-project1-group1.git
 ```
 
-Set up variables on .env file:
+Copy `.env.example` to `.env` and fill the variables:
 
 ```
 AWS_ACCESS_KEY_ID="<id>"
