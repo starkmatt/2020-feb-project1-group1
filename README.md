@@ -50,7 +50,7 @@ Deploy:
 
 Deploy the infrastructure on AWS using the docker image pushed to ECR
 ```
-make build
+make deploy
 ```
 
 Destroy:
