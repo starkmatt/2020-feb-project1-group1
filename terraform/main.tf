@@ -18,7 +18,8 @@ module "aws-ecs-service" {
   cluster_id   = module.aws-ecs-cluster.id
   task_arn     = module.aws-ecs-task-def.arn
   project_name = var.project_name
-  subnet_ids   = module.networking.subnet_private_ids
+  subnet_ids   = module.networking.subnet_public_ids
+  vpc_id       = module.networking.vpc_id
 }
 
 module "networking" {
