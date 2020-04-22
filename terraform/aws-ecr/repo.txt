@@ -1,1 +1,0 @@
-repository_url = 709308406413.dkr.ecr.ap-southeast-2.amazonaws.com/wordpress
