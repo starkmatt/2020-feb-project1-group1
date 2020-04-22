@@ -56,6 +56,7 @@ resource "aws_route_table" "rt_public" {
 resource "aws_route_table" "rt_private" {
   vpc_id = aws_vpc.vpc.id
 
+  route = []
   tags = {
     Name = "${var.project_name}_rt_private"
   }
