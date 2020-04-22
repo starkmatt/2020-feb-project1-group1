@@ -1,7 +1,7 @@
 [
     {
         "name": "project_1",
-        "image": "wordpress",
+        "image": "wordpress:latest",
         "essential": true,
         "cpu": 256,
         "memory": 512,
